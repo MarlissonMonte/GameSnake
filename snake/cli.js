@@ -10,15 +10,17 @@ let State = Snake.initialState()
 const Matrix = {
   make:      table => rep(rep('.')(table.cols))(table.rows),
   set:       val   => pos => adjust(pos.y)(adjust(pos.x)(k(val))),
-  addSnake:  state => pipe(...map(Matrix.set('O'))(state.snake)),
-  addApple:  state => Matrix.set('*')(state.apple),
-  addCrash:  state => state.snake.length == 0 ? map(map(k(':('))) : id,
+  addSnake:  state => pipe(...map(Matrix.set('O'))(state.snake)), // -Alteramos o corpo da cobra para "O", assim a estética dela ficará mais similar a de uma cobra.
+  addApple:  state => Matrix.set('*')(state.apple), // -Alteramos a "maça" para "*", assim a estética ficará similiar a de uma maça.
+  addPoison: state => Matrix.set('X')(state.poison),
+  addCrash:  state => state.snake.length == 0 ? map(map(k(':('))) : id, // -Alteramos o a ilustração final do fim do jogo para ":(", assim fica com uma didático que que a partido do jogo chegou ao seu fim, ou seja, game over.  
   toString:  xsxs  => xsxs.map(xs => xs.join(' ')).join('\r\n'),
   fromState: state => pipe(
     Matrix.make,
     Matrix.addSnake(state),
     Matrix.addApple(state),
     Matrix.addCrash(state),
+    Matrix.addPoison(state),
   )(state)
 }
 
@@ -53,4 +55,4 @@ const vel = (v=3) => {
     }
 }
 
-setInterval(() => { step(); show() }, vel(2)) //vel(1) to vel(5); default = vel(3)
+setInterval(() => { step(); show() }, vel(3)) //vel(1) to vel(5); default = vel(3)

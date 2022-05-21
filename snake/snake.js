@@ -11,6 +11,7 @@ const pointEq = p1 => p2 => p1.x == p2.x && p1.y == p2.y
 
 // Funções de ações
 const willEat   = state => pointEq(nextHead(state))(state.apple)
+const willPoison = state => pointEq(nextHead(state))(state.poison)
 const willCrash = state => state.snake.find(pointEq(nextHead(state)))
 const validMove = move => state =>
   state.moves[0].x + move.x != 0 || state.moves[0].y + move.y != 0
@@ -18,6 +19,8 @@ const validMove = move => state =>
 // Próximos valores baseados no estado atual
 const nextMoves = state => state.moves.length > 1 ? dropFirst(state.moves) : state.moves
 const nextApple = state => willEat(state) ? rndPos(state) : state.apple
+const nextPoison = state => willPoison(state) ? rndPos(state) : state.poison
+
 const nextHead  = state => state.snake.length == 0
   ? { x: 2, y: 2 }
   : {
@@ -39,10 +42,11 @@ const rndPos = table => ({
 // Estado inicial
 const initialState = () => ({
   cols:  20,
-  rows:  14,
+  rows:  15, // -Aumentamos o tamanho da linha para 15, assim agora o tamanho da matriz ficou 20x15.
   moves: [EAST],
   snake: [],
   apple: { x: 16, y: 2 },
+  poison: { x: 10, y: 5 }
 })
 
 const next = spec({
@@ -50,7 +54,8 @@ const next = spec({
   cols:  prop('cols'),
   moves: nextMoves,
   snake: nextSnake,
-  apple: nextApple
+  apple: nextApple,
+  poison: nextPoison
 })
 
 const enqueue = (state, move) => validMove(move)(state)
