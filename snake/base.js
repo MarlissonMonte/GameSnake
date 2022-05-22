@@ -58,10 +58,10 @@ criando uma cópia que garante a imutabilidade garantida pelo paradigma funciona
 */
 const mod       = x => y => ((y % x) + x) % x
 /*
-A constante mod recebe como parâmetro (x) e (y) respectivamente e retorna um resultado, onde
-primeiro consiste no restante da divisão de y por x,
-segundo consiste a soma do resultado (da divisão de y por x) com x,
-e por fim o restante da divisão do o resultado anterios por x.
+A constante mod recebe como parâmetro (x) e (y) respectivamente e retorna um resultado, que é obtido
+1- consiste no restante da divisão de y por x,
+2- consiste a soma do resultado (da divisão de y por x) com x,
+e por fim retornará o restante da divisão do o resultado anterios por x.
 */
 const objOf     = k => v => ({ [k]: v })
 const pipe      = (...fns) => x => [...fns].reduce((acc, f) => f(acc), x)
@@ -74,6 +74,9 @@ Sendo (k) um elemento e ([o]) uma lista, a constante tem por finalidade usar o e
 */
 const range     = n => m => Array.apply(null, Array(m - n)).map((_, i) => n + i)
 const rep       = c => n => map(k(c))(range(0)(n))
+/*
+
+*/
 const rnd       = min => max => Math.floor(Math.random() * max) + min
 /*
 Recebe dois parâmetros, (min) e (max), respectivamente que condicional um intervalo 
