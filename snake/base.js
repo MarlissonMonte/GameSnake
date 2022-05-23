@@ -13,21 +13,22 @@ a partir de uma certa posição passada, ou seja, posições inícial e final de
 (lembrando que a posição final não é necessariamente preciso ser passado,
 e o primeiro indice é a posição de número 0).
 Nesse caso, a constante 'dropFirst' receberá uma lista ([xs]) e retornará uma nova cópia da lista
-a partir do segundo indice. 
-IMUTABILIDADE.........(continuar comentario) 
+a partir do segundo indice.  
+Essa constante respeita o conceito de IMUTABILIDADE, no qual afirma que os elementos não podem ter seu valor alterado como resultado de qualquer ação por parte de expressões
+ou aplicação de funções, nesse caso os valores de ([xs]) não serão alterados,
+apenas será feita uma cópia, mantendo os valores originais fies. 
 */
-const dropLast  = xs => xs.slice(0, xs.length - 1)
+const dropLast  = xs => xs.slice(0, xs.length - 1) 
 /*
 A constante 'dropLast' receberá uma lista ([xs]) e retornará uma nova cópia da lista, 
 do primeiro indice (posição 0) até o penultimo indece (posição -1) da lista original.
-IMUTABILIDADE.........(continuar comentario)
+essa constante também segue uma Imutabilidade conforme a explicação acima. 
 */
 const id        = x => x
 /*
 A constante id é uma funcao que recebe um parâmentro (x) e retorna esse mesmo parâmetro (x).
 Ou seja, retornando uma espécie de cópia para poder ser alterada 
-sem ferir o principio da imutabilidade.
-IMUTABILIDADE.........(continuar comentario)
+sem ferir o principio da IMUTABILIDADE.
  */
 const k         = x => y => x
 /*
@@ -40,14 +41,16 @@ em cada elemento com parâmetros. Então a partir de cada chamada de retorno o v
 se torna o elemento do novo array.
 Nesse caso, a constante 'map' receberá dois parâmetros, uma função (f) e uma lista ([xs]), 
 e retornará cada valor da lista ([xs]) com aplicaçao da função (f). 
+Lembrando que a função map não infringe o princípio da IMUTABILIDADE,
+pois essa operaçõe gera uma cópia da lista original como resultado. 
 */
 const mapi      = f => xs => xs.map((x, i) => f(x)(i))
 /*
 A constante 'mapi' recebe uma função (f) como parâmetro e também recebe uma lista ([xs]),
-e retorna uma lista onde há uma função anonima (funções que não dependem de nomes, 
+e retorna uma lista onde há uma FUNÇÃO ANONIMA (funções que não dependem de nomes, 
 somente são declaradas e armazenadas em uma variável) dentro do (.map)
 que recebe como parâmetro (x, i) e retorna na função (f) como novos parâmetros.
-(comentário sujeito a melhorias)
+Lembrando que a função map não infringe o princípio da IMUTABILIDADE, visto na explicação acima.
 */
 const merge     = o1 => o2 => Object.assign({}, o1, o2)
 /*
@@ -64,8 +67,17 @@ A constante mod recebe como parâmetro (x) e (y) respectivamente e retorna um re
 e por fim retornará o restante da divisão do o resultado anterios por x.
 */
 const objOf     = k => v => ({ [k]: v })
+/*
+A constante objOf recebe dois parâmetros (k) e (v) respectivamente,
+retornando um registro com a lista ([k]) como chave e (v) como valor desse registro.
+*/
 const pipe      = (...fns) => x => [...fns].reduce((acc, f) => f(acc), x)
-
+/*
+A função reduce() recebe dois parametros (f, i),
+sendo (i) o valor inicial de um acumulador (acc), e (f) uma função que será aplicado para cada valor da lista, acumulando esses valores em (acc).
+A constante pipe recebe (...fns), ou seja uma quantidade indefinida de funções, e um argumento (x),
+retornando a aplicacão de todas essas funcões no acumulador (acc) com valor Inicial (x).
+*/
 const prop      = k => o => o[k]
 /*
 A constante prop recebe dois parâmetros, (k) e (o), respectivamente.
@@ -73,9 +85,18 @@ Sendo (k) um elemento e ([o]) uma lista, a constante tem por finalidade usar o e
 (k) como índice para uma busca na lista ([o]) e retorna o resultado correspondente dentro da lista.
 */
 const range     = n => m => Array.apply(null, Array(m - n)).map((_, i) => n + i)
+/*
+O metodo apply() possui parametros (this, array),
+chamando uma função com o valor (this) e argumentos fornecidos em (Array);
+A constante range recebe os argumentos (n) e (m) respectivamente,
+criando um array em que se inicia no primeiro argumento e termina no antessessor do segundo argumento,
+tendo comprimento (m-n);  progredindo de 1 em 1.
+*/
 const rep       = c => n => map(k(c))(range(0)(n))
 /*
-
+A constante rep reutiliza as funções criadas (map, k, range),
+ela recebe dois parâmetros (c) (n) respectivamente,
+e em seu retorno cria uma array de comprimento (n) e de argumentos (c).
 */
 const rnd       = min => max => Math.floor(Math.random() * max) + min
 /*
@@ -89,5 +110,8 @@ Sendo somado assim com o valor min no final para permanecer dentro do intervalo 
 const spec      = o => x => Object.keys(o)
   .map(k => objOf(k)(o[k](x)))
   .reduce((acc, o) => Object.assign(acc, o))
+/*
+A constamte spec recebe como parâmetro ([o]) e (x), e 
+*/
 
 module.exports = { adjust, dropFirst, dropLast, id, k, map, merge, mod, objOf, pipe, prop, range, rep, rnd, spec }
