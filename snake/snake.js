@@ -2,10 +2,10 @@ const base = require('./base')
 Object.getOwnPropertyNames(base).map(p => global[p] = base[p])
 
 // Constantes de movimentação
-const NORTH = { x: 0, y:-1 }
-const SOUTH = { x: 0, y: 1 }
-const EAST  = { x: 1, y: 0 }
-const WEST  = { x:-1, y: 0 }
+const NORTH = { x: 0, y:-1 } // Movimento Para cima.
+const SOUTH = { x: 0, y: 1 } // Movimento Para baixo.
+const EAST  = { x: 1, y: 0 } // Movimento Para direira.
+const WEST  = { x:-1, y: 0 } // Movimento Para esquerda.
 /*
 Tais constantes servem para retornar a direcao que a cobra irá seguir. 
 Cada constante recebe dois parametros que serão coerentes as direcoes e sentidos que a cobra ira tracar dentro da matriz/mapa.
@@ -17,34 +17,31 @@ A constante PointEq recebe dois parametros (p1) e (p2), respectivamente.
 O objetivo dessa constante é comparar as posições de determinado item no mapa/matriz, testando se as cordenadas de p1 (x,y) são iguais a de p2 (x,y), 
 retornando um valor True caso seja validado o teste e False, caso não.
 */
-const willEatW   = state => pointEq(nextHead(state))(state.trap)
-const willEatP1  = state => pointEq(nextHead(state))(state.poison1)
-const willEatP2  = state => pointEq(nextHead(state))(state.poison2)
-const willEatW2  = state => pointEq(nextHead(state))(state.trap2)
-//# retorna um booleano
+const willEatW   = state => pointEq(nextHead(state))(state.trap)    // Tais funções testam se a cabeça da cobra está na mesma posição que um dos objetivo/obstaculos dentro do mapa. Caso esteja, ela retorna um booleano True e recebe a consequencia referente a qual objetivo/obstaculo ela encontrou, caso não, retorna False, continuando o jogo.
+const willEatP1  = state => pointEq(nextHead(state))(state.poison1) //*Tais funções testam se a cabeça da cobra está na mesma posição que um dos objetivo/obstaculos dentro do mapa. Caso esteja, ela retorna um booleano True e recebe a consequencia referente a qual objetivo/obstaculo ela encontrou, caso não, retorna False, continuando o jogo.
+const willEatP2  = state => pointEq(nextHead(state))(state.poison2) //*Tais funções testam se a cabeça da cobra está na mesma posição que um dos objetivo/obstaculos dentro do mapa. Caso esteja, ela retorna um booleano True e recebe a consequencia referente a qual objetivo/obstaculo ela encontrou, caso não, retorna False, continuando o jogo.
+const willEatW2  = state => pointEq(nextHead(state))(state.trap2)   //*Tais funções testam se a cabeça da cobra está na mesma posição que um dos objetivo/obstaculos dentro do mapa. Caso esteja, ela retorna um booleano True e recebe a consequencia referente a qual objetivo/obstaculo ela encontrou, caso não, retorna False, continuando o jogo.
+//# retorna um BOOLEANO
 /*
 testa se a cabeça/inicio da cobra está no mesmo lugar que a maça,
 confirmando assim que a cobra "comeu", sendo o objetivo do jogo para acrecimo de pontuacao e de tamanho da cobra.
 */
 
 // Funções de ações
-const willEat   = state => pointEq(nextHead(state))(state.apple) // #retorna booleano
+const willEat   = state => pointEq(nextHead(state))(state.apple) // #retorna BOOLEANO
 /*
 Essa constante willEat testa se a cabeça/inicio da cobra está no mesmo lugar que a maça, confirmando assim que a cobra "comeu",
 sendo o objetivo do jogo para acrecimo de pontuacao e de tamanho da cobra.
 */
-const willPoison = state => pointEq(nextHead(state))(state.poison) //retorna booleano
-//
-const willCrash = state => state.snake.find(pointEq(nextHead(state)))  
-    || pointEq(nextHead(state))(state.trap) // #Adicionando trap
-    || pointEq(nextHead(state))(state.trap2)
+
+const willCrash = state => state.snake.find(pointEq(nextHead(state)))  // Essa constante 'WillCrash' vereficada se a cabeca da cobra se encontra na mesma posicao que uma parte da cobra.  
+    || pointEq(nextHead(state))(state.trap)  // Adiciamos mais casos de colisão, nesse caso se a cobra tocar na armadilha.
+    || pointEq(nextHead(state))(state.trap2) //*Adiciamos mais casos de colisão, nesse caso se a cobra tocar na armadilha.
 /*
-Adicionamos uma condição para o caso da cobra entrar em contato com o veneno. 
-O willCrash testa se a cobra entou em contato com ou ela mesma ou se sua "cabeça" se encontra na mesma posição dentro da matriz q o veneno. Caso retorne True em qualquer uma das condições, o jogo se encerra
+Adicionamos essas condições para o caso da cobra entrar em contato com a armadilha. 
+O willCrash testa se a cobra entou em contato com ou ela mesma ou se sua "cabeça" se encontra na mesma posição dentro da matriz que a armadilha. Caso retorne True em qualquer uma das condições, o jogo se encerra.
 */
-/*
-Essa constante 'WillCrash' vereficada se a cabeca da cobra se encontra na mesma posicao que uma parte da cobra.  
-*/
+
 const validMove = move => state =>
   state.moves[0].x + move.x != 0 || state.moves[0].y + move.y != 0
 /*
@@ -55,13 +52,20 @@ por exemplo se ela estiver vindo da esquerda para direita, ela não podera alter
 
 
 // Próximos valores baseados no estado atual
-const nextMoves = state => state.moves.length > 1 ? dropFirst(state.moves) : state.moves
-const nextApple = state => willEat(state) ? rndPos(state) : state.apple //# retorna um novo state de maça, i.e uma nova posição dentro da martrix/mapa.
 
-const nexttrap    = state => willEatW(state)  ? rndPos(state) : state.trap    // trap
-const nextPoison1 = state => willEatP1(state) ? rndPos(state) : state.poison1 // 
-const nextPoison2 = state => willEatP2(state) ? rndPos(state) : state.poison2 //
-const nexttrap2   = state => willEatW2(state) ? rndPos(state) : state.trap2   // retorna um novo state de venon, i.e uma nova posição dentro da martrix/mapa
+const nextApple   = state => willEat(state) 
+                                  || pointEq(state.poison1)(state.apple)
+                                  || pointEq(state.poison2)(state.apple)
+                                  || pointEq(state.trap)(state.apple)
+                                  || pointEq(state.trap2)(state.apple)
+                                  || state.snake.find(pointEq(state.apple))  ? rndPos(state) : state.apple // Retorna um novo state de maça, i.e uma nova posição dentro da martrix/mapa.
+// Essas 5 condiçoes extras servem para evitar que a maça se encontre no mesmo lugar que um dos obstáculos ou acabe aparecendo dentro da cobra durante a passagem dela pelo mapa.
+// elas testam se a posiçao da maça é a mesma de algum dos obstáculos e na ultima condição testa se a maça esta dentro da cobra atraves da funcao find. Para achar se a coordenada da maça confere com uma das coordenada em que 
+const nextMoves = state => state.moves.length > 1 ? dropFirst(state.moves) : state.moves
+const nexttrap    = state => willEatW(state)  ? rndPos(state) : state.trap    // Retorna um novo state de armadilha, i.e uma nova posição dentro da martrix/mapa.
+const nextPoison1 = state => willEatP1(state) ? rndPos(state) : state.poison1 // Retorna um novo state de veneno, i.e uma nova posição dentro da martrix/mapa.
+const nextPoison2 = state => willEatP2(state) ? rndPos(state) : state.poison2 //*Retorna um novo state de armadilha, i.e uma nova posição dentro da martrix/mapa.
+const nexttrap2   = state => willEatW2(state) ? rndPos(state) : state.trap2   //*Retorna um novo state de armadilha, i.e uma nova posição dentro da martrix/mapa.
 
 const nextHead  = state => state.snake.length == 0
   ? { x: 2, y: 2 }
@@ -97,33 +101,34 @@ sendo o numero de fileiras(referente ao eixo x) e colunas (referente o eixo y).
 // Estado inicial
 const initialState = () => ({ 
   cols:  20, // O cols é a quantidade de colunas da matriz do jogo. 
-  rows:  15, // #Aumentamos o tamanho da linha para 15, assim agora o tamanho da matriz do jogo ficou 20x15.
+  rows:  15, // Aumentamos o tamanho da linha para 15, assim agora o tamanho da matriz do jogo ficou 20x15.
   moves: [EAST], // A direção inicial da cobra está direcionado para o leste (direita).
   snake: [], // Em seu estado incial a cobra será dada como uma lista vazia, ou seja, seu tamanho ([]).
-  poison1: {x: rnd(0)(19),y: rnd(0)(14)},
-  poison2: {x: rnd(0)(19),y: rnd(0)(14)},
-  trap2:   {x: rnd(0)(19),y: rnd(0)(14)},
-  trap:    {x: rnd(0)(19),y: rnd(0)(14)},
-  apple:   {x: rnd(0)(19),y: rnd(0)(14)}
+  poison1: {x: rnd(0)(19),y: rnd(0)(14)}, // Essas funções garatem o estado inicial dos elementos dentro do jogo em seu inicio, sendo alterado sua posição inicial para algo randomico, garantindo maior dinâmica dentro do jogo. Isso atraves do uso da funcão rnd() ja descrita nesse arquivo.
+  poison2: {x: rnd(0)(19),y: rnd(0)(14)}, //*Essas funções garatem o estado inicial dos elementos dentro do jogo em seu inicio, sendo alterado sua posição inicial para algo randomico, garantindo maior dinâmica dentro do jogo. Isso atraves do uso da funcão rnd() ja descrita nesse arquivo.
+  trap2:   {x: rnd(0)(19),y: rnd(0)(14)}, //*Essas funções garatem o estado inicial dos elementos dentro do jogo em seu inicio, sendo alterado sua posição inicial para algo randomico, garantindo maior dinâmica dentro do jogo. Isso atraves do uso da funcão rnd() ja descrita nesse arquivo.
+  trap:    {x: rnd(0)(19),y: rnd(0)(14)}, //*Essas funções garatem o estado inicial dos elementos dentro do jogo em seu inicio, sendo alterado sua posição inicial para algo randomico, garantindo maior dinâmica dentro do jogo. Isso atraves do uso da funcão rnd() ja descrita nesse arquivo.
+  apple:   {x: rnd(0)(19),y: rnd(0)(14)}  //*Essas funções garatem o estado inicial dos elementos dentro do jogo em seu inicio, sendo alterado sua posição inicial para algo randomico, garantindo maior dinâmica dentro do jogo. Isso atraves do uso da funcão rnd() ja descrita nesse arquivo.
 })
 
 /*
 Essa constante initialState retorná um objt com seu estado inicial no jogo. 
 */
 const next   = spec({ // objetos
-  rows:    prop('rows'),
-  cols:    prop('cols'),
-  moves:   nextMoves,
-  snake:   nextSnake,
-  apple:   nextApple,
-  poison1: nextPoison1, //#
-  poison2: nextPoison2,
-  trap2:   nexttrap2,
-  trap:    nexttrap //#
+  rows:    prop('rows'),  // Aqui dentro do objeto Next está a configuração de atualização do jogo. Elas atualização o estado dos elementos e ações dentro do jogo enquanto o mesmo está rodando. Elas garantem a mudança de estado dos elementos e ações apos o ínicio do jogo, manuteindo a dinâmica do tal.
+  cols:    prop('cols'),  //*Aqui dentro do objeto Next está a configuração de atualização do jogo. Elas atualização o estado dos elementos e ações dentro do jogo enquanto o mesmo está rodando. Elas garantem a mudança de estado dos elementos e ações apos o ínicio do jogo, manuteindo a dinâmica do tal.
+  moves:   nextMoves,     //*Aqui dentro do objeto Next está a configuração de atualização do jogo. Elas atualização o estado dos elementos e ações dentro do jogo enquanto o mesmo está rodando. Elas garantem a mudança de estado dos elementos e ações apos o ínicio do jogo, manuteindo a dinâmica do tal.
+  snake:   nextSnake,     //*Aqui dentro do objeto Next está a configuração de atualização do jogo. Elas atualização o estado dos elementos e ações dentro do jogo enquanto o mesmo está rodando. Elas garantem a mudança de estado dos elementos e ações apos o ínicio do jogo, manuteindo a dinâmica do tal.
+  apple:   nextApple,     //*Aqui dentro do objeto Next está a configuração de atualização do jogo. Elas atualização o estado dos elementos e ações dentro do jogo enquanto o mesmo está rodando. Elas garantem a mudança de estado dos elementos e ações apos o ínicio do jogo, manuteindo a dinâmica do tal.
+  poison1: nextPoison1,   //*Aqui dentro do objeto Next está a configuração de atualização do jogo. Elas atualização o estado dos elementos e ações dentro do jogo enquanto o mesmo está rodando. Elas garantem a mudança de estado dos elementos e ações apos o ínicio do jogo, manuteindo a dinâmica do tal.
+  poison2: nextPoison2,   //*Aqui dentro do objeto Next está a configuração de atualização do jogo. Elas atualização o estado dos elementos e ações dentro do jogo enquanto o mesmo está rodando. Elas garantem a mudança de estado dos elementos e ações apos o ínicio do jogo, manuteindo a dinâmica do tal.
+  trap2:   nexttrap2,     //*Aqui dentro do objeto Next está a configuração de atualização do jogo. Elas atualização o estado dos elementos e ações dentro do jogo enquanto o mesmo está rodando. Elas garantem a mudança de estado dos elementos e ações apos o ínicio do jogo, manuteindo a dinâmica do tal.
+  trap:    nexttrap       //*Aqui dentro do objeto Next está a configuração de atualização do jogo. Elas atualização o estado dos elementos e ações dentro do jogo enquanto o mesmo está rodando. Elas garantem a mudança de estado dos elementos e ações apos o ínicio do jogo, manuteindo a dinâmica do tal.
 })
 
-const enqueue = (state, move) => validMove(move)(state)
+const enqueue = (state, move) => validMove(move)(state) // Aqui garante a mobilidade válida da cobra durante o jogo, impossibilitando q a mesma volte por onde veio e bata em si, ocasionando no final do jogo.
   ? merge(state)({ moves: state.moves.concat([move]) })
   : state
+// Caso o movimento seja válido, a cobra poderá alterar seu movimento durante o jogo, caso contrário, ela manterá seu curso original antes do gatilho do usuário.
 
 module.exports = { EAST, NORTH, SOUTH, WEST, initialState, enqueue, next, }

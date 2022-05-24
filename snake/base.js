@@ -33,13 +33,14 @@ sem ferir o principio da IMUTABILIDADE.
 const k         = x => y => x
 /*
 A constante (k) recebe dois parâmetros (x,y) e retorna o primeiro parâmetro(x). 
- */
+Essa FUNÇÃO É PURA pois a mesma entrada sempre retorna a mesma saída e não possui efeitos colaterais.
+*/
 const map       = f => xs => xs.map(f)
 /*
-A função map() percorre o array da esquerda para a direita invocando uma função de retorno
+A função map() percorre o ARRAY da esquerda para a direita invocando uma função de retorno
 em cada elemento com parâmetros. Então a partir de cada chamada de retorno o valor que será devolvido
 se torna o elemento do novo array.
-Nesse caso, a constante 'map' receberá dois parâmetros, uma função (f) e uma lista ([xs]), 
+Nesse caso, a constante 'map' receberá dois parâmetros, uma função (f) e uma LISTA ([xs]), 
 e retornará cada valor da lista ([xs]) com aplicaçao da função (f). 
 Lembrando que a função map não infringe o princípio da IMUTABILIDADE,
 pois essa operaçõe gera uma cópia da lista original como resultado. 
@@ -57,7 +58,7 @@ const merge     = o1 => o2 => Object.assign({}, o1, o2)
 A constante merge recebe dois parâmetros: (o1,o2) respectivamente, e,
 usando da funcao (Object.assign), copia as propriedades do primeiro parâmetro o1 e de um objeto vazio ({}),
 tranferindo para o segundo parâmetro o2 assim,
-criando uma cópia que garante a imutabilidade garantida pelo paradigma funcional
+criando uma cópia que garante a imutabilidade garantida pelo paradigma funcional.
 */
 const mod       = x => y => ((y % x) + x) % x
 /*
@@ -69,7 +70,7 @@ e por fim retornará o restante da divisão do o resultado anterios por x.
 const objOf     = k => v => ({ [k]: v })
 /*
 A constante objOf recebe dois parâmetros (k) e (v) respectivamente,
-retornando um registro com a lista ([k]) como chave e (v) como valor desse registro.
+retornando um REGISTRO com a lista ([k]) como chave e (v) como valor desse registro.
 */
 const pipe      = (...fns) => x => [...fns].reduce((acc, f) => f(acc), x)
 /*
@@ -111,7 +112,8 @@ const spec      = o => x => Object.keys(o)
   .map(k => objOf(k)(o[k](x)))
   .reduce((acc, o) => Object.assign(acc, o))
 /*
-A constamte spec recebe como parâmetro ([o]) e (x), e 
+A constamte spec recebe como parâmetro ([o]) e (x), 
+onde o (x) é o estado do frame atual e (o) o proximo estado, apenas a partir do (x) é gerado (o)  
 */
 
 module.exports = { adjust, dropFirst, dropLast, id, k, map, merge, mod, objOf, pipe, prop, range, rep, rnd, spec }
